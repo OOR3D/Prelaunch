@@ -50,8 +50,6 @@ export default class Experience
         // Html Elements
         this.html = {}
         this.html.preloader = document.getElementById("preloader")
-        this.html.playButton = document.getElementById("play-button")
-
 
         // Resources
         this.resources = new Resources(sources)
