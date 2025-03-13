@@ -93,6 +93,9 @@
     <script>
       const audio = document.getElementById("background-music");
       const button = document.getElementById("mute-button");
+      const startExperienceButton = document.getElementById(
+        "start-experience button"
+      );
       const audioOffIcon = document.getElementById("audio-off-icon");
       const audioOnIcon = document.getElementById("audio-on-icon");
       const clickSound = document.getElementById("click-sound");
@@ -102,39 +105,43 @@
         try {
           // Initialize audio context if not already initialized
           if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
             gainNode = audioContext.createGain();
             gainNode.connect(audioContext.destination);
-            
+
             // Connect the audio element to the audio context
             audioSource = audioContext.createMediaElementSource(audio);
             audioSource.connect(gainNode);
-            
+
             // Start with volume at 0
             gainNode.gain.value = 0;
           }
-          
+
           // Removed click sound from here - it's only for other buttons
-          
+
           if (audio.muted) {
             // Unmute and play
             audio.muted = false;
-            
+
             // Try to play the audio
-            await audio.play().catch(err => {
-              console.log('Background music playback error:', err);
+            await audio.play().catch((err) => {
+              console.log("Background music playback error:", err);
               // If play fails, keep it muted
               audio.muted = true;
               audioOffIcon.style.display = "block";
               audioOnIcon.style.display = "none";
               return;
             });
-            
+
             // If we get here, play succeeded
             // Fade in the audio
             gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + 2);
-            
+            gainNode.gain.linearRampToValueAtTime(
+              1,
+              audioContext.currentTime + 2
+            );
+
             // Update UI
             audioOffIcon.style.display = "none";
             audioOnIcon.style.display = "block";
@@ -142,9 +149,99 @@
           } else {
             // Fade out the audio
             if (audioContext && gainNode) {
-              gainNode.gain.setValueAtTime(gainNode.gain.value, audioContext.currentTime);
-              gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
-              
+              gainNode.gain.setValueAtTime(
+                gainNode.gain.value,
+                audioContext.currentTime
+              );
+              gainNode.gain.linearRampToValueAtTime(
+                0,
+                audioContext.currentTime + 0.5
+              );
+
+              // Mute after fade out
+              setTimeout(() => {
+                audio.muted = true;
+                audioOffIcon.style.display = "block";
+                audioOnIcon.style.display = "none";
+                button.title = "Click to enable audio";
+              }, 500);
+            } else {
+              // If audio context isn't initialized, just mute
+              audio.muted = true;
+              audioOffIcon.style.display = "block";
+              audioOnIcon.style.display = "none";
+              button.title = "Click to enable audio";
+            }
+          }
+        } catch (error) {
+          console.error("Audio toggle error:", error);
+          // Fallback to basic mute toggle if something goes wrong
+          audio.muted = !audio.muted;
+          audioOffIcon.style.display = audio.muted ? "block" : "none";
+          audioOnIcon.style.display = audio.muted ? "none" : "block";
+        }
+      }
+
+      // Function to toggle mute state
+      async function startExperience() {
+        try {
+          // Initialize audio context if not already initialized
+          if (!audioContext) {
+            audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.connect(audioContext.destination);
+
+            // Connect the audio element to the audio context
+            audioSource = audioContext.createMediaElementSource(audio);
+            audioSource.connect(gainNode);
+
+            // Start with volume at 0
+            gainNode.gain.value = 0;
+          }
+
+          await clickSound
+            .play()
+            .catch((err) => console.log("Click sound error:", err));
+
+          if (audio.muted) {
+            // Unmute and play
+            audio.muted = false;
+
+            // Try to play the audio
+            await audio.play().catch((err) => {
+              console.log("Background music playback error:", err);
+              // If play fails, keep it muted
+              audio.muted = true;
+              audioOffIcon.style.display = "block";
+              audioOnIcon.style.display = "none";
+              return;
+            });
+
+            // If we get here, play succeeded
+            // Fade in the audio
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(
+              1,
+              audioContext.currentTime + 2
+            );
+
+            // Update UI
+            audioOffIcon.style.display = "none";
+            audioOnIcon.style.display = "block";
+            button.title = "Click to disable audio";
+          } else {
+            // Fade out the audio
+            if (audioContext && gainNode) {
+              gainNode.gain.setValueAtTime(
+                gainNode.gain.value,
+                audioContext.currentTime
+              );
+              gainNode.gain.linearRampToValueAtTime(
+                0,
+                audioContext.currentTime + 0.5
+              );
+
               // Mute after fade out
               setTimeout(() => {
                 audio.muted = true;
@@ -326,7 +423,7 @@
                 color: white;
               "
             >
-              Welcome, Creative
+              Welcome, Creative 123
             </p>
           </div>
           <p
@@ -361,37 +458,9 @@
                   preloader.remove();
                 }, 1000);
               }, 1000);
-              
+
               // Initialize audio context first
-              initAudio();
-              
-              // Play click sound first
-              clickSound.play().then(() => {
-                // After click sound plays successfully, try to unmute and play background music
-                audio.muted = false;
-                
-                // Small delay to ensure clean transition
-                setTimeout(() => {
-                  audio.play().then(() => {
-                    fadeInAudio();
-                    audioOffIcon.style.display = 'none';
-                    audioOnIcon.style.display = 'block';
-                  }).catch(err => {
-                    console.log('Background music playback error:', err);
-                    audio.muted = true;
-                    audioOffIcon.style.display = 'block';
-                    audioOnIcon.style.display = 'none';
-                  });
-                }, 100);
-              }).catch(err => {
-                console.log('Click sound playback error:', err);
-              });
-            "
-            ontouchstart="
-              // Prevent default to ensure clean touch handling
-              event.preventDefault();
-              // Trigger the same click handler
-              this.click();
+              startExperience();
             "
           >
             Start Your Experience
