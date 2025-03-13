@@ -91,11 +91,16 @@
     </button>
 
     <script>
+      // Global audio elements
+      const backgroundMusic = document.getElementById("background-music");
+      const clickSound = document.getElementById("click-sound");
+      const audioOffIcon = document.getElementById("audio-off-icon");
+      const audioOnIcon = document.getElementById("audio-on-icon");
+
       document.addEventListener("DOMContentLoaded", function () {
-        const audio = document.getElementById("background-music");
+        // Update references to use backgroundMusic instead of audio
+        const audio = backgroundMusic;
         const button = document.getElementById("mute-button");
-        const audioOffIcon = document.getElementById("audio-off-icon");
-        const audioOnIcon = document.getElementById("audio-on-icon");
 
         // Audio context to check if audio is allowed
         let audioContext = null;
@@ -195,7 +200,7 @@
           gainNode = audioContext.createGain();
           gainNode.connect(audioContext.destination);
 
-          const audio = document.getElementById("background-music");
+          const audio = backgroundMusic;
           audioSource = audioContext.createMediaElementSource(audio);
           audioSource.connect(gainNode);
 
@@ -310,26 +315,29 @@
                 }, 1000);
               }, 1000);
               
-              const audio = document.getElementById('background-music');
-              const audioOffIcon = document.getElementById('audio-off-icon');
-              const audioOnIcon = document.getElementById('audio-on-icon');
-              
-              // Initialize audio context and fade in
+              // Initialize audio context first
               initAudio();
-              audio.muted = false;
               
-              // Play click sound first (more likely to work on mobile)
-              const clickSound = document.getElementById('click-sound');
-              clickSound.currentTime = 0;
+              // Play click sound first
               clickSound.play().then(() => {
-                // Only after click sound starts, try to play background music
-                audio.play();
-                fadeInAudio();
+                // After click sound plays successfully, try to unmute and play background music
+                backgroundMusic.muted = false;
                 
-                audioOffIcon.style.display = 'none';
-                audioOnIcon.style.display = 'block';
+                // Small delay to ensure clean transition
+                setTimeout(() => {
+                  backgroundMusic.play().then(() => {
+                    fadeInAudio();
+                    audioOffIcon.style.display = 'none';
+                    audioOnIcon.style.display = 'block';
+                  }).catch(err => {
+                    console.log('Background music playback error:', err);
+                    backgroundMusic.muted = true;
+                    audioOffIcon.style.display = 'block';
+                    audioOnIcon.style.display = 'none';
+                  });
+                }, 100);
               }).catch(err => {
-                console.log('Audio playback error:', err);
+                console.log('Click sound playback error:', err);
               });
             "
             ontouchstart="
@@ -578,9 +586,9 @@
                     cursor: pointer;
                   "
                   onclick="
-                    const clickSound = document.getElementById('click-sound');
-                    clickSound.currentTime = 0;
-                    clickSound.play();
+                    const clickSound1 = document.getElementById('click-sound');
+                    clickSound1.currentTime = 0;
+                    clickSound1.play();
                     window.open('https://discord.gg/oor3d', '_blank');
                   "
                 >
