@@ -232,16 +232,36 @@
       >
         <div
           style="
+            position: relative;
             border-radius: 20px;
-            border: 1px solid #f3c042;
             padding: 16px 20px;
             box-shadow: 0px 40px 40px 0px #00000042;
             backdrop-filter: blur(60px);
             display: flex;
             flex-direction: column;
             gap: 16px;
+            background-color: #50393933;
+            isolation: isolate;
           "
         >
+          <div
+            style="
+              content: '';
+              position: absolute;
+              inset: 0;
+              border-radius: 20px;
+              padding: 1px;
+              background: linear-gradient(to bottom, #f3c042, #bf28bd);
+              -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+              mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+              -webkit-mask-composite: xor;
+              mask-composite: exclude;
+              pointer-events: none;
+              z-index: -1;
+            "
+          ></div>
           <div
             style="display: flex; gap: 8px; justify-content: center"
             id="discord-tile"
@@ -280,10 +300,16 @@
               cursor: pointer;
             "
             onclick="
-              preloader.classList.add('fade-out-long');
+              // Remove start-experience immediately
+              document.getElementById('start-experience').remove();
+              
               setTimeout(() => {
-                preloader.remove();
-              }, 2000);
+                preloader.classList.add('fade-out-long');
+                setTimeout(() => {
+                  preloader.remove();
+                }, 1000);
+              }, 1000);
+              
               const audio = document.getElementById('background-music');
               const audioOffIcon = document.getElementById('audio-off-icon');
               const audioOnIcon = document.getElementById('audio-on-icon');
@@ -441,16 +467,36 @@
             >
               <div
                 style="
+                  position: relative;
                   border-radius: 20px;
-                  border: 1px solid #f3c042;
                   padding: 16px 20px;
                   box-shadow: 0px 40px 40px 0px #00000042;
                   backdrop-filter: blur(60px);
                   display: flex;
                   flex-direction: column;
                   gap: 16px;
+                  background-color: #50393933;
+                  isolation: isolate;
                 "
               >
+                <div
+                  style="
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 20px;
+                    padding: 1px;
+                    background: linear-gradient(to bottom, #f3c042, #bf28bd);
+                    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                      linear-gradient(#fff 0 0);
+                    mask: linear-gradient(#fff 0 0) content-box,
+                      linear-gradient(#fff 0 0);
+                    -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+                    pointer-events: none;
+                    z-index: -1;
+                  "
+                ></div>
                 <div
                   style="display: flex; gap: 8px; justify-content: center"
                   id="discord-tile"

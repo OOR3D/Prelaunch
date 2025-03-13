@@ -102,7 +102,7 @@ body {
   width: 50%;
   height: 100dvh;
   z-index: -1;
-  background-color: #000;
+  background-color: #110F0F;
   -webkit-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
