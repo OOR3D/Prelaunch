@@ -99,15 +99,74 @@
 
       // Function to toggle mute state
       async function toggleMute() {
-        if (audio.muted) {
-          audio.muted = false;
-          audioOffIcon.style.display = "none";
-          audioOnIcon.style.display = "block";
-        } else {
-          audio.muted = true;
-          audioOffIcon.style.display = "block";
-          audioOnIcon.style.display = "none";
-          button.title = "Click to enable audio";
+        try {
+          // Initialize audio context if not already initialized
+          if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.connect(audioContext.destination);
+            
+            // Connect the audio element to the audio context
+            audioSource = audioContext.createMediaElementSource(audio);
+            audioSource.connect(gainNode);
+            
+            // Start with volume at 0
+            gainNode.gain.value = 0;
+          }
+          
+          // Play click sound first
+          await clickSound.play().catch(err => console.log('Click sound error:', err));
+          
+          if (audio.muted) {
+            // Unmute and play
+            audio.muted = false;
+            
+            // Try to play the audio
+            await audio.play().catch(err => {
+              console.log('Background music playback error:', err);
+              // If play fails, keep it muted
+              audio.muted = true;
+              audioOffIcon.style.display = "block";
+              audioOnIcon.style.display = "none";
+              return;
+            });
+            
+            // If we get here, play succeeded
+            // Fade in the audio
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + 2);
+            
+            // Update UI
+            audioOffIcon.style.display = "none";
+            audioOnIcon.style.display = "block";
+            button.title = "Click to disable audio";
+          } else {
+            // Fade out the audio
+            if (audioContext && gainNode) {
+              gainNode.gain.setValueAtTime(gainNode.gain.value, audioContext.currentTime);
+              gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+              
+              // Mute after fade out
+              setTimeout(() => {
+                audio.muted = true;
+                audioOffIcon.style.display = "block";
+                audioOnIcon.style.display = "none";
+                button.title = "Click to enable audio";
+              }, 500);
+            } else {
+              // If audio context isn't initialized, just mute
+              audio.muted = true;
+              audioOffIcon.style.display = "block";
+              audioOnIcon.style.display = "none";
+              button.title = "Click to enable audio";
+            }
+          }
+        } catch (error) {
+          console.error("Audio toggle error:", error);
+          // Fallback to basic mute toggle if something goes wrong
+          audio.muted = !audio.muted;
+          audioOffIcon.style.display = audio.muted ? "block" : "none";
+          audioOnIcon.style.display = audio.muted ? "none" : "block";
         }
       }
 
