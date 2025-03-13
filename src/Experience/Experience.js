@@ -47,6 +47,7 @@ export default class Experience {
     this.html.preloader = document.getElementById("preloader");
     this.html.logo = document.getElementById("preloader-logo");
     this.html.progress = document.getElementById("progress");
+    this.html.startExperience = document.getElementById("start-experience");
 
     // Resources
     this.resources = new Resources(sources);

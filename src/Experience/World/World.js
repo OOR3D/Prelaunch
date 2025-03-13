@@ -31,10 +31,9 @@ export default class World {
         this.html.progress.classList.add("fade-out");
         this.html.logo.classList.add("fade-out");
         setTimeout(() => {
-          this.html.preloader.classList.add("fade-out-long");
-          setTimeout(() => {
-            this.html.preloader.remove();
-          }, 2000);
+          this.html.startExperience.style.display = "flex";
+          this.html.startExperience.offsetHeight;
+          this.html.startExperience.classList.add("fade-in-experience");
         }, 1000);
       }, 1000);
 

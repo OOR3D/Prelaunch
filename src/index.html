@@ -45,6 +45,12 @@
       Your browser does not support the audio element.
     </audio>
 
+    <!-- Add this after the existing background-music audio element -->
+    <audio id="click-sound">
+      <source src="/audios/button.ogg" type="audio/ogg" />
+      Your browser does not support the audio element.
+    </audio>
+
     <!-- Mute/Unmute Button -->
     <button
       id="mute-button"
@@ -66,8 +72,22 @@
         -webkit-tap-highlight-color: transparent;
       "
     >
-      <img id="audio-off-icon" src="images/audio-off.svg" alt="Audio Off" width="24" height="24" style="filter: invert(1);" />
-      <img id="audio-on-icon" src="images/audio-on.svg" alt="Audio On" width="24" height="24" style="display: none; filter: invert(1);" />
+      <img
+        id="audio-off-icon"
+        src="images/audio-off.svg"
+        alt="Audio Off"
+        width="24"
+        height="24"
+        style="filter: invert(1)"
+      />
+      <img
+        id="audio-on-icon"
+        src="images/audio-on.svg"
+        alt="Audio On"
+        width="24"
+        height="24"
+        style="display: none; filter: invert(1)"
+      />
     </button>
 
     <script>
@@ -161,11 +181,143 @@
       });
     </script>
 
+    <!-- Add this script after the existing DOMContentLoaded script -->
+    <script>
+      // Create audio context and gain node for fade effect
+      let audioContext;
+      let gainNode;
+      let audioSource;
+
+      function initAudio() {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+          gainNode = audioContext.createGain();
+          gainNode.connect(audioContext.destination);
+
+          const audio = document.getElementById("background-music");
+          audioSource = audioContext.createMediaElementSource(audio);
+          audioSource.connect(gainNode);
+
+          // Start with volume at 0
+          gainNode.gain.value = 0;
+        }
+      }
+
+      function fadeInAudio() {
+        // Set initial volume to 0
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        // Fade in over 2 seconds
+        gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + 2);
+      }
+    </script>
+
     <!-- Pre-Loader Start-->
     <div id="preloader">
       <img src="favicon.svg" alt="Logo" id="preloader-logo" />
       <div class="progress" id="progress" style="z-index: 10000">
         <div class="progressbar"></div>
+      </div>
+      <div
+        style="
+          display: flex;
+          width: 100%;
+          height: 100%;
+          justify-content: center;
+          align-items: center;
+          opacity: 0.5;
+          display: none;
+        "
+        id="start-experience"
+      >
+        <div
+          style="
+            border-radius: 20px;
+            border: 1px solid #f3c042;
+            padding: 16px 20px;
+            box-shadow: 0px 40px 40px 0px #00000042;
+            backdrop-filter: blur(60px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          "
+        >
+          <div
+            style="display: flex; gap: 8px; justify-content: center"
+            id="discord-tile"
+          >
+            <p
+              style="
+                font-size: 20px;
+                font-weight: 400;
+                font-family: Gilroy-Heavy;
+                color: white;
+              "
+            >
+              Welcome, Creative
+            </p>
+          </div>
+          <p
+            style="
+              font-size: 12px;
+              opacity: 50%;
+              font-family: Gilroy-Medium;
+              color: white;
+            "
+            id="be-the-first"
+          >
+            Step inside OOR3D and get a glimpse of what we're building.
+          </p>
+          <button
+            style="
+              width: 100%;
+              background-color: #390000;
+              border-radius: 10px;
+              border: 1px solid #ffc800;
+              padding: 8px 10px;
+              color: white;
+              font-size: 11px;
+              cursor: pointer;
+            "
+            onclick="
+              preloader.classList.add('fade-out-long');
+              setTimeout(() => {
+                preloader.remove();
+              }, 2000);
+              const audio = document.getElementById('background-music');
+              const audioOffIcon = document.getElementById('audio-off-icon');
+              const audioOnIcon = document.getElementById('audio-on-icon');
+              
+              // Initialize audio context and fade in
+              initAudio();
+              audio.muted = false;
+              audio.play();
+              fadeInAudio();
+              
+              audioOffIcon.style.display = 'none';
+              audioOnIcon.style.display = 'block';
+              
+              // Play the click sound
+              const clickSound = document.getElementById('click-sound');
+              clickSound.currentTime = 0;
+              clickSound.play();
+            "
+          >
+            Start Your Experience
+          </button>
+          <p
+            style="
+              font-size: 12px;
+              opacity: 50%;
+              font-family: Gilroy-Medium;
+              color: white;
+              text-align: center;
+            "
+            id="be-the-first"
+          >
+            (Turn your sound on for the full experience.)
+          </p>
+        </div>
       </div>
     </div>
     <!-- Pre-Loader end -->
@@ -369,7 +521,12 @@
                     font-size: 11px;
                     cursor: pointer;
                   "
-                  onclick="window.open('https://discord.gg/oor3d', '_blank')"
+                  onclick="
+                    const clickSound = document.getElementById('click-sound');
+                    clickSound.currentTime = 0;
+                    clickSound.play();
+                    window.open('https://discord.gg/oor3d', '_blank');
+                  "
                 >
                   Join Now!
                 </button>

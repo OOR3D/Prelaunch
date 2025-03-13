@@ -207,6 +207,11 @@ body {
   opacity: 1;
 }
 
+.fade-in-experience {
+  opacity: 1 !important;
+  transition: opacity 2s ease-out;
+}
+
 .fade-out {
   opacity: 0;
   transition: opacity 1s ease-out;
@@ -337,8 +342,9 @@ section:nth-child(odd) {
   .section #future-of-creating p {
     font-size: 10px !important; /* Reduce font size for mobile */
   }
-  .section #be-the-first {
+  #be-the-first {
     font-size: 8px !important; /* Reduce font size for mobile */
+    text-align: center;
   }
 }
 
@@ -362,7 +368,8 @@ section:nth-child(odd) {
   .section #future-of-creating p {
     font-size: 10px !important; /* Reduce font size for mobile */
   }
-  .section #be-the-first {
+  #be-the-first {
     font-size: 8px !important; /* Reduce font size for mobile */
+    text-align: center;
   }
 }
