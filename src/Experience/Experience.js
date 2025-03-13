@@ -161,7 +161,7 @@ export default class Experience {
     // Width and height
     const boundings = this.targetElement.getBoundingClientRect();
     this.config.width = boundings.width;
-    this.config.height = boundings.height || window.innerHeight;
+    this.config.height = boundings.height || window.outerHeight;
   }
 
   destroy() {

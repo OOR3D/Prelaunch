@@ -36,7 +36,7 @@ export default class Page {
         this.range = 1.0 / parseFloat(this.sectionCount)
         this.objectDistance = 100000;
         this.scrollY = window.scrollY
-        this.normalizedScrollY = this.scrollY / (document.body.offsetHeight - window.innerHeight);
+        this.normalizedScrollY = this.scrollY / (document.body.offsetHeight - window.outerHeight);
         this.currentSection = 0
 
 
@@ -335,8 +335,8 @@ export default class Page {
 
         //next center section
         if( !this.isMobile ){
-            this.centerPrevSection = (Math.floor(this.scrollY / window.innerHeight)) * window.innerHeight
-            this.centerNextSection = (Math.floor(this.scrollY / window.innerHeight) + 1) * window.innerHeight
+            this.centerPrevSection = (Math.floor(this.scrollY / window.outerHeight)) * window.outerHeight
+            this.centerNextSection = (Math.floor(this.scrollY / window.outerHeight) + 1) * window.outerHeight
 
             if ( this.scrollY + 100 > this.centerNextSection ) {
                 this.scrollY = this.centerNextSection
@@ -347,7 +347,7 @@ export default class Page {
             }
         }
 
-        this.normalizedScrollY = this.scrollY / (this.sectionCount * window.innerHeight);
+        this.normalizedScrollY = this.scrollY / (this.sectionCount * window.outerHeight);
         this.normalizedScrollY = Math.min(this.normalizedScrollY, 1.0)
     }
 
