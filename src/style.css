@@ -281,7 +281,7 @@ section:nth-child(odd) {
 @media (max-width: 768px) {
   .section h1 {
     font-size: 24px !important; /* Reduce font size for mobile */
-    margin-top: 100px; /* Adjust margin for mobile */
+    margin-top: 150px; /* Adjust margin for mobile */
   }
   .section #you-deserve {
     text-align: center;
@@ -325,7 +325,7 @@ section:nth-child(odd) {
 @media (max-width: 480px) {
   .section h1 {
     font-size: 18px !important; /* Reduce font size for mobile */
-    margin-top: 100px; /* Adjust margin for mobile */
+    margin-top: 150px; /* Adjust margin for mobile */
   }
   .section #you-deserve h2 {
     font-size: 18px !important; /* Reduce font size for mobile */
@@ -351,7 +351,7 @@ section:nth-child(odd) {
 @media (max-width: 320px) {
   .section h1 {
     font-size: 14px !important; /* Reduce font size for mobile */
-    margin-top: 100px; /* Adjust margin for mobile */
+    margin-top: 150px; /* Adjust margin for mobile */
   }
   .section #you-deserve h2 {
     font-size: 16px !important; /* Reduce font size for mobile */
