@@ -28,37 +28,18 @@ export default class World {
 
       // Remove preloader
       setTimeout(() => {
-        this.html.preloader.classList.add("preloaded");
-        this.html.preloader.remove();
+        this.html.progress.classList.add("fade-out");
+        this.html.logo.classList.add("fade-out");
+        setTimeout(() => {
+          this.html.preloader.classList.add("fade-out-long");
+          setTimeout(() => {
+            this.html.preloader.remove();
+          }, 2000);
+        }, 1000);
       }, 1000);
-      // this.html.playButton.remove();
 
       // Animation timeline
       this.animationPipeline();
-
-      //this.html.playButton.addEventListener('click', () => {
-
-      //this.html.playButton.classList.replace("fade-in", "fade-out");
-      //this.sound.createSounds();
-
-      //     setTimeout(() => {
-      //         this.experience.time.start = Date.now()
-      //         this.experience.time.elapsed = 0
-      //
-      //         // Setup
-      //         this.environment = new Environment()
-      //
-      //         // Remove preloader
-      //         this.html.preloader.classList.add("preloaded");
-      //         setTimeout(() => {
-      //             this.html.preloader.remove();
-      //             this.html.playButton.remove();
-      //         }, 2500);
-      //
-      //         // Animation timeline
-      //         this.animationPipeline();
-      //     }, 100);
-      // //}, { once: true });
     });
   }
 

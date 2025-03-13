@@ -140,6 +140,9 @@ export default class Page {
 
         this.boyGeometry = this.resources.items.boyModel.scene.children[0].geometry
         this.boyGeometry.scale(0.8, 0.8, 0.8)
+        if(window.innerWidth < 768){
+            this.boyGeometry.scale(0.35, 0.35, 0.35)
+        }
         // this.boyGeometry.translate(-1, -2.5, 0)
         this.boyGeometry.rotateX(-2 * Math.PI / 3)
         this.boyGeometry.rotateZ(Math.PI)
@@ -148,6 +151,10 @@ export default class Page {
 
         this.e2Geometry = this.resources.items.e2Model.scene.children[0].geometry;
         this.e2Geometry.scale(10, 10, 10)
+        if(window.innerWidth < 768){
+            this.e2Geometry.scale(0.7, 0.7, 0.7)
+            this.e2Geometry.translate(0, -0.5, 0)
+        }
         this.e2Geometry.translate(0, 1, 0)
         this.e2Geometry.rotateX(Math.PI / 2)
         this.e2Geometry.rotateY(Math.PI / 2)
@@ -164,6 +171,9 @@ export default class Page {
 
         this.oniGeometry = this.resources.items.oniModel.scene.children[0].geometry;
         this.oniGeometry.scale(40, 40, 40)
+        if(window.innerWidth < 768){
+            this.oniGeometry.scale(0.7, 0.7, 0.7)
+        }
         this.oniGeometry.rotateX(Math.PI / 2)
         this.oniGeometry.rotateY(-Math.PI * 2/ 3)
         // this.oniGeometry.translate(0, -7, 0)
@@ -243,6 +253,9 @@ export default class Page {
         this.horseMesh = this.resources.items.horseModel.scene
 
         this.horseMesh.scale.set(0.01, 0.01, 0.01)
+        if(window.innerWidth < 768){
+            this.horseMesh.scale.set(0.007, 0.007, 0.007)
+        }
 
         const pointsMaterial = new THREE.PointsMaterial( {
             size: 4,
