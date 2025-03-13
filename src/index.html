@@ -114,8 +114,7 @@
             gainNode.gain.value = 0;
           }
           
-          // Play click sound first
-          await clickSound.play().catch(err => console.log('Click sound error:', err));
+          // Removed click sound from here - it's only for other buttons
           
           if (audio.muted) {
             // Unmute and play
@@ -183,26 +182,86 @@
 
       function initAudio() {
         if (!audioContext) {
-          audioContext = new (window.AudioContext ||
-            window.webkitAudioContext)();
-          gainNode = audioContext.createGain();
-          gainNode.connect(audioContext.destination);
+          try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.connect(audioContext.destination);
 
-          const audio = document.getElementById("background-music");
-          audioSource = audioContext.createMediaElementSource(audio);
-          audioSource.connect(gainNode);
+            const audio = document.getElementById("background-music");
+            
+            // Check if the audio is already connected to avoid errors
+            if (!audioSource) {
+              audioSource = audioContext.createMediaElementSource(audio);
+              audioSource.connect(gainNode);
+            }
 
-          // Start with volume at 0
-          gainNode.gain.value = 0;
+            // Start with volume at 0
+            gainNode.gain.value = 0;
+          } catch (error) {
+            console.error("Error initializing audio context:", error);
+          }
         }
       }
 
       function fadeInAudio() {
-        // Set initial volume to 0
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        // Fade in over 2 seconds
-        gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + 2);
+        if (gainNode && audioContext) {
+          // Set initial volume to 0
+          gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+          // Fade in over 2 seconds
+          gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + 2);
+        }
       }
+      
+      // Add this to fix the Start Experience button issue
+      document.addEventListener('DOMContentLoaded', function() {
+        const startExperienceButton = document.querySelector('#start-experience button');
+        if (startExperienceButton) {
+          const originalOnClick = startExperienceButton.getAttribute('onclick');
+          
+          startExperienceButton.setAttribute('onclick', `
+            // Remove start-experience immediately
+            document.getElementById('start-experience').remove();
+            
+            setTimeout(() => {
+              preloader.classList.add('fade-out-long');
+              setTimeout(() => {
+                preloader.remove();
+              }, 1000);
+            }, 1000);
+            
+            // Initialize audio context first
+            initAudio();
+            
+            // Play click sound first
+            clickSound.play().then(() => {
+              // After click sound plays successfully, try to unmute and play background music
+              audio.muted = false;
+              
+              // Small delay to ensure clean transition
+              setTimeout(() => {
+                audio.play().then(() => {
+                  fadeInAudio();
+                  audioOffIcon.style.display = 'none';
+                  audioOnIcon.style.display = 'block';
+                }).catch(err => {
+                  console.log('Background music playback error:', err);
+                  // If background music fails to play, keep the mute button in muted state
+                  audio.muted = true;
+                  audioOffIcon.style.display = 'block';
+                  audioOnIcon.style.display = 'none';
+                });
+              }, 100);
+            }).catch(err => {
+              console.log('Click sound playback error:', err);
+              // Even if click sound fails, still try to play background music
+              audio.muted = false;
+              audio.play().catch(() => {
+                audio.muted = true;
+              });
+            });
+          `);
+        }
+      });
     </script>
 
     <!-- Pre-Loader Start-->
