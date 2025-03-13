@@ -41,14 +41,13 @@
 
     <!-- Add the audio element here -->
     <audio id="background-music" autoplay loop muted>
-      <source src="audios/bg.mp3" type="audio/mpeg" />
+      <source src="/audios/bg.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
     <!-- Mute/Unmute Button -->
     <button
       id="mute-button"
-      onclick="toggleMute()"
       style="
         position: fixed;
         bottom: 20px;
@@ -64,18 +63,88 @@
         font-size: 24px;
         line-height: 50px;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       "
     >
       🔇
     </button>
 
     <script>
-      function toggleMute() {
+      document.addEventListener('DOMContentLoaded', function() {
         const audio = document.getElementById("background-music");
         const button = document.getElementById("mute-button");
-        audio.muted = !audio.muted;
-        button.innerHTML = audio.muted ? "🔇" : "🔉";
-      }
+        
+        // Audio context to check if audio is allowed
+        let audioContext = null;
+        
+        // Function to check if audio is allowed
+        async function checkAudioPermission() {
+          try {
+            if (!audioContext) {
+              audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+              await audioContext.resume();
+            }
+            return audioContext.state === 'running';
+          } catch (err) {
+            console.error("Audio permission error:", err);
+            return false;
+          }
+        }
+
+        // Function to toggle mute state
+        async function toggleMute() {
+          if (audio.muted) {
+            try {
+              // Try to resume AudioContext first (for Chrome)
+              const canPlay = await checkAudioPermission();
+              
+              if (canPlay) {
+                audio.muted = false;
+                button.innerHTML = "🔊";
+                // Try to play (needed for Safari)
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                  playPromise.catch(error => {
+                    console.error("Play failed:", error);
+                    audio.muted = true;
+                    button.innerHTML = "🔇";
+                    button.title = "Click to enable audio (browser blocked autoplay)";
+                  });
+                }
+              } else {
+                button.innerHTML = "🔇";
+                button.title = "Audio blocked by browser. Click again or interact with the page first.";
+              }
+            } catch (err) {
+              console.error("Toggle mute error:", err);
+              button.innerHTML = "🔇";
+              button.title = "Audio permission denied. Try refreshing the page.";
+            }
+          } else {
+            audio.muted = true;
+            button.innerHTML = "🔇";
+            button.title = "Click to enable audio";
+          }
+        }
+
+        // Add click event listener
+        button.addEventListener('click', toggleMute);
+        
+        // Add title attribute for better UX
+        button.title = "Click to enable audio";
+        
+        // Try to play audio after user interaction with the page
+        document.addEventListener('click', function() {
+          if (audio.muted) {
+            // Just prepare the audio context, don't unmute yet
+            checkAudioPermission();
+          }
+        }, { once: true });
+      });
     </script>
 
     <!-- Pre-Loader Start-->
