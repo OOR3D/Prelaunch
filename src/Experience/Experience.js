@@ -89,7 +89,7 @@ export default class Experience {
     // Touch move event for mobile devices
     window.addEventListener("touchmove", (event) => {
       // Prevent default behavior to avoid scrolling while interacting
-      event.preventDefault();
+      // event.preventDefault();
       
       // Use the first touch point
       if (event.touches.length > 0) {
