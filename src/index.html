@@ -51,30 +51,31 @@
       style="
         position: fixed;
         bottom: 20px;
-        right: 30px;
-        z-index: 10001; /* Ensure it's above the preloader */
-        background-color: #fff;
+        right: 20px;
+        z-index: 10001;
+        background: none;
         border: none;
         border-radius: 50%;
         width: 50px;
         height: 50px;
         cursor: pointer;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        font-size: 24px;
-        line-height: 50px;
-        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
       "
     >
-      🔇
+      <img id="audio-off-icon" src="images/audio-off.svg" alt="Audio Off" width="24" height="24" style="filter: invert(1);" />
+      <img id="audio-on-icon" src="images/audio-on.svg" alt="Audio On" width="24" height="24" style="display: none; filter: invert(1);" />
     </button>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const audio = document.getElementById("background-music");
         const button = document.getElementById("mute-button");
+        const audioOffIcon = document.getElementById("audio-off-icon");
+        const audioOnIcon = document.getElementById("audio-on-icon");
 
         // Audio context to check if audio is allowed
         let audioContext = null;
@@ -105,32 +106,37 @@
 
               if (canPlay) {
                 audio.muted = false;
-                button.innerHTML = "🔊";
+                audioOffIcon.style.display = "none";
+                audioOnIcon.style.display = "block";
                 // Try to play (needed for Safari)
                 const playPromise = audio.play();
                 if (playPromise !== undefined) {
                   playPromise.catch((error) => {
                     console.error("Play failed:", error);
                     audio.muted = true;
-                    button.innerHTML = "🔇";
+                    audioOffIcon.style.display = "block";
+                    audioOnIcon.style.display = "none";
                     button.title =
                       "Click to enable audio (browser blocked autoplay)";
                   });
                 }
               } else {
-                button.innerHTML = "🔇";
+                audioOffIcon.style.display = "block";
+                audioOnIcon.style.display = "none";
                 button.title =
                   "Audio blocked by browser. Click again or interact with the page first.";
               }
             } catch (err) {
               console.error("Toggle mute error:", err);
-              button.innerHTML = "🔇";
+              audioOffIcon.style.display = "block";
+              audioOnIcon.style.display = "none";
               button.title =
                 "Audio permission denied. Try refreshing the page.";
             }
           } else {
             audio.muted = true;
-            button.innerHTML = "🔇";
+            audioOffIcon.style.display = "block";
+            audioOnIcon.style.display = "none";
             button.title = "Click to enable audio";
           }
         }
