@@ -86,6 +86,27 @@ export default class Experience {
       this.cursor.y = -(event.clientY / this.sizes.height) * 2 + 1;
     });
 
+    // Touch move event for mobile devices
+    window.addEventListener("touchmove", (event) => {
+      // Prevent default behavior to avoid scrolling while interacting
+      event.preventDefault();
+      
+      // Use the first touch point
+      if (event.touches.length > 0) {
+        this.cursor.x = (event.touches[0].clientX / this.sizes.width) * 2 - 1;
+        this.cursor.y = -(event.touches[0].clientY / this.sizes.height) * 2 + 1;
+      }
+    }, { passive: false });
+
+    // Touch start event to capture initial touch position
+    window.addEventListener("touchstart", (event) => {
+      // Use the first touch point
+      if (event.touches.length > 0) {
+        this.cursor.x = (event.touches[0].clientX / this.sizes.width) * 2 - 1;
+        this.cursor.y = -(event.touches[0].clientY / this.sizes.height) * 2 + 1;
+      }
+    });
+
     // Scroll
     window.addEventListener("scroll", () => {
       this.scroll();

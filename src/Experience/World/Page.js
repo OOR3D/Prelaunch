@@ -141,7 +141,7 @@ export default class Page {
         this.boyGeometry = this.resources.items.boyModel.scene.children[0].geometry
         this.boyGeometry.scale(0.8, 0.8, 0.8)
         if(window.innerWidth < 768){
-            this.boyGeometry.scale(0.35, 0.35, 0.35)
+            this.boyGeometry.scale(0.4, 0.4, 0.4)
         }
         // this.boyGeometry.translate(-1, -2.5, 0)
         this.boyGeometry.rotateX(-2 * Math.PI / 3)
@@ -436,7 +436,7 @@ export default class Page {
 
         this.treeMesh.rotateY(-this.time.delta * 0.1)
 
-        this.camera.position.x += (this.cursor.x * 0.5 - this.camera.position.x) * 5 * this.time.delta
-        this.camera.position.y += (- this.cursor.y * 0.5 - this.camera.position.y) * 5 * this.time.delta
+        this.camera.position.x += (this.cursor.x * 0.5 - this.camera.position.x) * 8 * this.time.delta
+        this.camera.position.y += (- this.cursor.y * 0.5 - this.camera.position.y) * 8 * this.time.delta
     }
 }
