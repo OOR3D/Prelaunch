@@ -280,12 +280,13 @@
       function initAudio() {
         if (!audioContext) {
           try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
             gainNode = audioContext.createGain();
             gainNode.connect(audioContext.destination);
 
             const audio = document.getElementById("background-music");
-            
+
             // Check if the audio is already connected to avoid errors
             if (!audioSource) {
               audioSource = audioContext.createMediaElementSource(audio);
@@ -305,17 +306,24 @@
           // Set initial volume to 0
           gainNode.gain.setValueAtTime(0, audioContext.currentTime);
           // Fade in over 2 seconds
-          gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + 2);
+          gainNode.gain.linearRampToValueAtTime(
+            1,
+            audioContext.currentTime + 2
+          );
         }
       }
-      
+
       // Add this to fix the Start Experience button issue
-      document.addEventListener('DOMContentLoaded', function() {
-        const startExperienceButton = document.querySelector('#start-experience button');
+      document.addEventListener("DOMContentLoaded", function () {
+        const startExperienceButton = document.querySelector(
+          "#start-experience button"
+        );
         if (startExperienceButton) {
-          const originalOnClick = startExperienceButton.getAttribute('onclick');
-          
-          startExperienceButton.setAttribute('onclick', `
+          const originalOnClick = startExperienceButton.getAttribute("onclick");
+
+          startExperienceButton.setAttribute(
+            "onclick",
+            `
             // Remove start-experience immediately
             document.getElementById('start-experience').remove();
             
@@ -356,7 +364,8 @@
                 audio.muted = true;
               });
             });
-          `);
+          `
+          );
         }
       });
     </script>
@@ -499,6 +508,7 @@
             >
               Create Without Complexity
             </h1>
+            <div id="scroll-arrow">↓</div>
           </section>
 
           <section class="section" style="position: relative">
@@ -737,7 +747,26 @@
 
       <div style="width: 100%; height: 300dvh"></div>
     </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const scrollArrow = document.getElementById("scroll-arrow");
+        const fakeScroll = document.getElementById("fake-scroll");
 
+        // Hide scroll arrow on first scroll
+        fakeScroll.addEventListener(
+          "scroll",
+          function () {
+            if (scrollArrow && scrollArrow.style.display !== "none") {
+              scrollArrow.style.opacity = "0";
+              setTimeout(() => {
+                scrollArrow.style.display = "none";
+              }, 500); // Wait for fade out animation before removing from DOM flow
+            }
+          },
+          { once: true }
+        ); // The event will only trigger once
+      });
+    </script>
     <script type="module" src="./script.js"></script>
   </body>
 </html>
