@@ -317,16 +317,26 @@
               // Initialize audio context and fade in
               initAudio();
               audio.muted = false;
-              audio.play();
-              fadeInAudio();
               
-              audioOffIcon.style.display = 'none';
-              audioOnIcon.style.display = 'block';
-              
-              // Play the click sound
+              // Play click sound first (more likely to work on mobile)
               const clickSound = document.getElementById('click-sound');
               clickSound.currentTime = 0;
-              clickSound.play();
+              clickSound.play().then(() => {
+                // Only after click sound starts, try to play background music
+                audio.play();
+                fadeInAudio();
+                
+                audioOffIcon.style.display = 'none';
+                audioOnIcon.style.display = 'block';
+              }).catch(err => {
+                console.log('Audio playback error:', err);
+              });
+            "
+            ontouchstart="
+              // Prevent default to ensure clean touch handling
+              event.preventDefault();
+              // Trigger the same click handler
+              this.click();
             "
           >
             Start Your Experience
