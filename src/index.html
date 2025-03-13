@@ -91,16 +91,11 @@
     </button>
 
     <script>
-      // Global audio elements
-      const backgroundMusic = document.getElementById("background-music");
-      const clickSound = document.getElementById("click-sound");
-      const audioOffIcon = document.getElementById("audio-off-icon");
-      const audioOnIcon = document.getElementById("audio-on-icon");
-
       document.addEventListener("DOMContentLoaded", function () {
-        // Update references to use backgroundMusic instead of audio
-        const audio = backgroundMusic;
+        const audio = document.getElementById("background-music");
         const button = document.getElementById("mute-button");
+        const audioOffIcon = document.getElementById("audio-off-icon");
+        const audioOnIcon = document.getElementById("audio-on-icon");
 
         // Audio context to check if audio is allowed
         let audioContext = null;
@@ -200,7 +195,7 @@
           gainNode = audioContext.createGain();
           gainNode.connect(audioContext.destination);
 
-          const audio = backgroundMusic;
+          const audio = document.getElementById("background-music");
           audioSource = audioContext.createMediaElementSource(audio);
           audioSource.connect(gainNode);
 
@@ -315,23 +310,28 @@
                 }, 1000);
               }, 1000);
               
+              const audio = document.getElementById('background-music');
+              const clickSound = document.getElementById('click-sound');
+              const audioOffIcon = document.getElementById('audio-off-icon');
+              const audioOnIcon = document.getElementById('audio-on-icon');
+              
               // Initialize audio context first
               initAudio();
               
               // Play click sound first
               clickSound.play().then(() => {
                 // After click sound plays successfully, try to unmute and play background music
-                backgroundMusic.muted = false;
+                audio.muted = false;
                 
                 // Small delay to ensure clean transition
                 setTimeout(() => {
-                  backgroundMusic.play().then(() => {
+                  audio.play().then(() => {
                     fadeInAudio();
                     audioOffIcon.style.display = 'none';
                     audioOnIcon.style.display = 'block';
                   }).catch(err => {
                     console.log('Background music playback error:', err);
-                    backgroundMusic.muted = true;
+                    audio.muted = true;
                     audioOffIcon.style.display = 'block';
                     audioOnIcon.style.display = 'none';
                   });
