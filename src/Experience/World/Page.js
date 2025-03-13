@@ -254,7 +254,7 @@ export default class Page {
 
         this.horseMesh.scale.set(0.01, 0.01, 0.01)
         if(window.innerWidth < 768){
-            this.horseMesh.scale.set(0.007, 0.007, 0.007)
+            this.horseMesh.scale.set(0.005, 0.005, 0.005)
         }
 
         const pointsMaterial = new THREE.PointsMaterial( {
@@ -285,6 +285,9 @@ export default class Page {
 
 
         this.fg = this.horseMesh.children[0].geometry
+        if(window.innerWidth < 768){
+            this.fg.scale(0.7, 0.7, 0.7)
+        }
 
         this.aE2Geometry = new Float32Array( this.fg.attributes.position.array.length );
 
