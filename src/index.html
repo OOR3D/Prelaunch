@@ -91,94 +91,28 @@
     </button>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const audio = document.getElementById("background-music");
-        const button = document.getElementById("mute-button");
-        const audioOffIcon = document.getElementById("audio-off-icon");
-        const audioOnIcon = document.getElementById("audio-on-icon");
+      const audio = document.getElementById("background-music");
+      const button = document.getElementById("mute-button");
+      const audioOffIcon = document.getElementById("audio-off-icon");
+      const audioOnIcon = document.getElementById("audio-on-icon");
+      const clickSound = document.getElementById("click-sound");
 
-        // Audio context to check if audio is allowed
-        let audioContext = null;
-
-        // Function to check if audio is allowed
-        async function checkAudioPermission() {
-          try {
-            if (!audioContext) {
-              audioContext = new (window.AudioContext ||
-                window.webkitAudioContext)();
-            }
-            if (audioContext.state === "suspended") {
-              await audioContext.resume();
-            }
-            return audioContext.state === "running";
-          } catch (err) {
-            console.error("Audio permission error:", err);
-            return false;
-          }
+      // Function to toggle mute state
+      async function toggleMute() {
+        if (audio.muted) {
+          audio.muted = false;
+          audioOffIcon.style.display = "none";
+          audioOnIcon.style.display = "block";
+        } else {
+          audio.muted = true;
+          audioOffIcon.style.display = "block";
+          audioOnIcon.style.display = "none";
+          button.title = "Click to enable audio";
         }
+      }
 
-        // Function to toggle mute state
-        async function toggleMute() {
-          if (audio.muted) {
-            try {
-              // Try to resume AudioContext first (for Chrome)
-              const canPlay = await checkAudioPermission();
-
-              if (canPlay) {
-                audio.muted = false;
-                audioOffIcon.style.display = "none";
-                audioOnIcon.style.display = "block";
-                // Try to play (needed for Safari)
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                  playPromise.catch((error) => {
-                    console.error("Play failed:", error);
-                    audio.muted = true;
-                    audioOffIcon.style.display = "block";
-                    audioOnIcon.style.display = "none";
-                    button.title =
-                      "Click to enable audio (browser blocked autoplay)";
-                  });
-                }
-              } else {
-                audioOffIcon.style.display = "block";
-                audioOnIcon.style.display = "none";
-                button.title =
-                  "Audio blocked by browser. Click again or interact with the page first.";
-              }
-            } catch (err) {
-              console.error("Toggle mute error:", err);
-              audioOffIcon.style.display = "block";
-              audioOnIcon.style.display = "none";
-              button.title =
-                "Audio permission denied. Try refreshing the page.";
-            }
-          } else {
-            audio.muted = true;
-            audioOffIcon.style.display = "block";
-            audioOnIcon.style.display = "none";
-            button.title = "Click to enable audio";
-          }
-        }
-
-        // Add click event listener
-        button.addEventListener("click", toggleMute);
-
-        // Add title attribute for better UX
-        button.title = "Click to enable audio";
-
-        // Try to play audio after user interaction with the page
-        document.addEventListener(
-          "click",
-          function () {
-            if (audio.muted) {
-              // Just prepare the audio context, don't unmute yet
-              checkAudioPermission();
-            }
-          },
-          { once: true }
-        );
-      });
+      // Add click event listener
+      button.addEventListener("click", toggleMute);
     </script>
 
     <!-- Add this script after the existing DOMContentLoaded script -->
@@ -251,7 +185,7 @@
               inset: 0;
               border-radius: 20px;
               padding: 1px;
-              background: linear-gradient(to bottom, #f3c042, #EA3324);
+              background: linear-gradient(to bottom, #f3c042, #ea3324);
               -webkit-mask: linear-gradient(#fff 0 0) content-box,
                 linear-gradient(#fff 0 0);
               mask: linear-gradient(#fff 0 0) content-box,
@@ -309,11 +243,6 @@
                   preloader.remove();
                 }, 1000);
               }, 1000);
-              
-              const audio = document.getElementById('background-music');
-              const clickSound = document.getElementById('click-sound');
-              const audioOffIcon = document.getElementById('audio-off-icon');
-              const audioOnIcon = document.getElementById('audio-on-icon');
               
               // Initialize audio context first
               initAudio();
@@ -504,7 +433,7 @@
                     inset: 0;
                     border-radius: 20px;
                     padding: 1px;
-                    background: linear-gradient(to bottom, #f3c042, #EA3324);
+                    background: linear-gradient(to bottom, #f3c042, #ea3324);
                     -webkit-mask: linear-gradient(#fff 0 0) content-box,
                       linear-gradient(#fff 0 0);
                     mask: linear-gradient(#fff 0 0) content-box,
